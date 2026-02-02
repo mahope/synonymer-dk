@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Synonymordbog | Find Danske Synonymer Gratis</title>
+    <meta name="title" content="Synonymordbog | Find Danske Synonymer Gratis">
+    <meta name="description" content="Find synonymer og relaterede ord på dansk. Gratis online synonymordbog med tusindvis af ord. Perfekt til tekstforfattere, studerende og kreative.">
+    <meta name="keywords" content="synonymer, synonym, danske synonymer, ordbog, synonymordbog, ord, dansk sprog">
+    <meta name="author" content="Mahope.dk">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://synonymer.holstjensen.eu">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://synonymer.holstjensen.eu">
+    <meta property="og:title" content="Synonymordbog | Danske Synonymer">
+    <meta property="og:description" content="Find synonymer og relaterede ord på dansk. Gratis online synonymordbog.">
+    <meta property="og:locale" content="da_DK">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Synonymordbog",
+      "url": "https://synonymer.holstjensen.eu",
+      "description": "Gratis dansk synonymordbog",
+      "applicationCategory": "ReferenceApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "DKK" }
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --surface: #ffffff;
+            --border: #e7e5e4;
+            --text: #1c1917;
+            --muted: #78716c;
+            --accent: #0ea5e9;
+            --accent-hover: #38bdf8;
+            --synonym-bg: #f0f9ff;
+            --synonym-border: #bae6fd;
+            --radius: 16px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0c0a09;
+            --surface: #1c1917;
+            --border: #292524;
+            --text: #fafaf9;
+            --muted: #a8a29e;
+            --synonym-bg: #0c4a6e;
+            --synonym-border: #0369a1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        .search-section {
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.75rem;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.5rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent);
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1.25rem;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .search-box button:hover {
+            background: var(--accent-hover);
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .suggestion {
+            padding: 0.5rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion:hover {
+            border-color: var(--accent);
+            background: var(--synonym-bg);
+        }
+
+        .results {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .result-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        .result-word {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-type {
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .result-body {
+            padding: 1.5rem;
+        }
+
+        .synonym-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .synonym-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .synonym-label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .synonyms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .synonym {
+            padding: 0.5rem 1rem;
+            background: var(--synonym-bg);
+            border: 1px solid var(--synonym-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .synonym:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .antonyms .synonym {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        [data-theme="dark"] .antonyms .synonym {
+            background: #450a0a;
+            border-color: #7f1d1d;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+        }
+
+        .no-results h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .example {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            font-style: italic;
+            color: var(--muted);
+        }
+
+        .example strong {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .history {
+            margin-top: 2rem;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-header h2 {
+            font-size: 1rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .clear-history {
+            font-size: 0.85rem;
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .history-item {
+            padding: 0.5rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            border-color: var(--accent);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .seo-content {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .seo-content h2 {
+            margin-bottom: 1rem;
+        }
+
+        .seo-content p {
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.75rem; }
+            .search-box { flex-direction: column; }
+            .search-box button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Skift tema">☀️</button>
+
+    <div class="container">
+        <header>
+            <h1>📖 Synonymordbog</h1>
+            <p class="subtitle">Find synonymer og relaterede ord på dansk</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Indtast et ord..." autocomplete="off">
+                <button id="searchBtn">Søg</button>
+            </div>
+            <div class="suggestions">
+                <span class="suggestion" data-word="glad">glad</span>
+                <span class="suggestion" data-word="stor">stor</span>
+                <span class="suggestion" data-word="god">god</span>
+                <span class="suggestion" data-word="hurtig">hurtig</span>
+                <span class="suggestion" data-word="smuk">smuk</span>
+                <span class="suggestion" data-word="klog">klog</span>
+            </div>
+        </div>
+
+        <div class="results" id="results" style="display: none;"></div>
+
+        <div class="history" id="historySection" style="display: none;">
+            <div class="history-header">
+                <h2>📜 Seneste søgninger</h2>
+                <button class="clear-history" id="clearHistory">Ryd</button>
+            </div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+
+        <section class="seo-content">
+            <h2>Om Synonymordbogen</h2>
+            <p>
+                Vores gratis synonymordbog hjælper dig med at finde alternative ord og udtryk på dansk.
+                Uanset om du skriver en opgave, en artikel eller bare vil udvide dit ordforråd,
+                kan du hurtigt finde synonymer, antonymer og relaterede ord.
+            </p>
+            <p>
+                Synonymer er ord med samme eller lignende betydning. Ved at bruge forskellige synonymer
+                kan du gøre din tekst mere varieret og interessant at læse.
+            </p>
+        </section>
+
+        <footer>
+            <p>Lavet med ❤️ af <a href="https://mahope.dk">Mahope</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+                Se også: 
+                <a href="https://lorem.holstjensen.eu">Lorem Ipsum</a> · 
+                <a href="https://farver.holstjensen.eu">Farve Palette</a> · 
+                <a href="https://citater.holstjensen.eu">Citater</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Synonym database (subset for MVP)
+        const synonymDatabase = {
+            "glad": {
+                type: "adjektiv",
+                synonyms: ["lykkelig", "tilfreds", "fornøjet", "munter", "opstemt", "i godt humør", "begejstret", "jublende", "strålende", "henrykt"],
+                antonyms: ["trist", "ulykkelig", "nedtrykt", "ked af det", "melankolsk"],
+                related: ["glæde", "lykke", "tilfredshed", "munterhed"],
+                example: "Hun var så <strong>glad</strong> for gaven, at hun næsten græd af glæde."
+            },
+            "stor": {
+                type: "adjektiv",
+                synonyms: ["enorm", "kæmpe", "vældig", "betydelig", "omfattende", "massiv", "gigantisk", "kolossal", "imponerende", "anselig"],
+                antonyms: ["lille", "bitte", "minimal", "ubetydelig"],
+                related: ["størrelse", "omfang", "dimension"],
+                example: "Det var et <strong>stort</strong> projekt, der krævede mange ressourcer."
+            },
+            "god": {
+                type: "adjektiv",
+                synonyms: ["fremragende", "fortræffelig", "udmærket", "fin", "glimrende", "fornem", "ypperlig", "fantastisk", "super", "pragtfuld"],
+                antonyms: ["dårlig", "elendig", "ringe", "ussel"],
+                related: ["godhed", "kvalitet", "dygtighed"],
+                example: "Det var en <strong>god</strong> ide at tage paraplyen med."
+            },
+            "hurtig": {
+                type: "adjektiv",
+                synonyms: ["hastig", "rask", "kvikt", "lynhurtig", "ekspres", "flink", "behændig", "snar", "øjeblikkelig", "prompt"],
+                antonyms: ["langsom", "træg", "sløv", "gradvis"],
+                related: ["hastighed", "hurtighed", "tempo"],
+                example: "Han løb <strong>hurtigt</strong> ned ad gaden for at nå bussen."
+            },
+            "smuk": {
+                type: "adjektiv",
+                synonyms: ["skøn", "dejlig", "flot", "køn", "yndig", "henrivende", "betagende", "nydelig", "prægtig", "elegant"],
+                antonyms: ["grim", "hæslig", "uskøn"],
+                related: ["skønhed", "elegance", "ynde"],
+                example: "Solnedgangen var utrolig <strong>smuk</strong> den aften."
+            },
+            "klog": {
+                type: "adjektiv",
+                synonyms: ["intelligent", "begavet", "dygtig", "skarp", "vidende", "lærd", "vis", "indsigtsfuld", "opvakt", "skarptsindet"],
+                antonyms: ["dum", "uvidende", "naiv", "tankeløs"],
+                related: ["klogskab", "intelligens", "visdom"],
+                example: "Det var et <strong>klogt</strong> træk at investere tidligt."
+            },
+            "trist": {
+                type: "adjektiv",
+                synonyms: ["sørgelig", "bedrøvelig", "melankolsk", "tungsindig", "nedtrykt", "ked af det", "sorgfuld", "veemodig", "dyster", "tungsindigt"],
+                antonyms: ["glad", "munter", "lykkelig", "opstemt"],
+                related: ["tristhed", "sorg", "melankoli"],
+                example: "Filmen havde en <strong>trist</strong> slutning, der fik mange til at græde."
+            },
+            "nem": {
+                type: "adjektiv",
+                synonyms: ["let", "ubesværet", "simpel", "ligetil", "ukompliceret", "overskuelig", "bekvem", "enkel"],
+                antonyms: ["svær", "vanskelig", "kompliceret", "besværlig"],
+                related: ["lethed", "enkelhed", "simpelhed"],
+                example: "Opskriften var <strong>nem</strong> at følge, selv for begyndere."
+            },
+            "arbejde": {
+                type: "substantiv/verbum",
+                synonyms: ["job", "beskæftigelse", "erhverv", "ansættelse", "virke", "indsats", "stræben", "slid", "møje"],
+                antonyms: ["fritid", "hvile", "ferie", "afslapning"],
+                related: ["arbejder", "arbejdsgiver", "arbejdsplads"],
+                example: "Han elsker sit <strong>arbejde</strong> og glæder sig til at møde hver morgen."
+            },
+            "hus": {
+                type: "substantiv",
+                synonyms: ["bolig", "hjem", "bopæl", "residens", "ejendom", "bygning", "villa", "lejlighed"],
+                antonyms: [],
+                related: ["husstand", "huslig", "hjemlig"],
+                example: "De købte et nyt <strong>hus</strong> i udkanten af byen."
+            },
+            "spise": {
+                type: "verbum",
+                synonyms: ["indtage", "fortære", "nyde", "gumle", "proppe sig", "smovse", "tage til sig", "ernære sig"],
+                antonyms: ["faste", "sulte"],
+                related: ["mad", "måltid", "spisning"],
+                example: "Vi skal <strong>spise</strong> middag klokken seks."
+            },
+            "løbe": {
+                type: "verbum",
+                synonyms: ["sprinte", "rende", "trave", "jogge", "spurte", "haste", "ile", "fare"],
+                antonyms: ["gå", "stå", "sidde", "hvile"],
+                related: ["løber", "løbetur", "løbebane"],
+                example: "Hun elsker at <strong>løbe</strong> i skoven om morgenen."
+            },
+            "tale": {
+                type: "verbum",
+                synonyms: ["snakke", "kommunikere", "konversere", "diskutere", "drøfte", "udveksle ord", "ytre sig", "formulere sig"],
+                antonyms: ["tie", "lytte", "være stille"],
+                related: ["samtale", "dialog", "ytring"],
+                example: "De sad og <strong>talte</strong> sammen i flere timer."
+            },
+            "tænke": {
+                type: "verbum",
+                synonyms: ["overveje", "reflektere", "gruble", "fundere", "spekulere", "meditere", "analysere", "vurdere"],
+                antonyms: ["handle", "reagere impulsivt"],
+                related: ["tanke", "tænkning", "eftertanke"],
+                example: "Lad mig <strong>tænke</strong> over det og vende tilbage."
+            },
+            "se": {
+                type: "verbum",
+                synonyms: ["kigge", "betragte", "skue", "iagttage", "observere", "studere", "stirre", "glane"],
+                antonyms: ["overse", "ignorere"],
+                related: ["syn", "udsigt", "blik"],
+                example: "Kan du <strong>se</strong> skibet derude på havet?"
+            }
+        };
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsDiv = document.getElementById('results');
+        const historySection = document.getElementById('historySection');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistory');
+        const themeToggle = document.getElementById('themeToggle');
+        const suggestions = document.querySelectorAll('.suggestion');
+
+        // History
+        let searchHistory = JSON.parse(localStorage.getItem('synonymHistory') || '[]');
+
+        function search(word) {
+            const normalizedWord = word.toLowerCase().trim();
+            if (!normalizedWord) return;
+
+            // Add to history
+            if (!searchHistory.includes(normalizedWord)) {
+                searchHistory.unshift(normalizedWord);
+                if (searchHistory.length > 10) searchHistory.pop();
+                localStorage.setItem('synonymHistory', JSON.stringify(searchHistory));
+            }
+
+            // Find in database
+            const result = synonymDatabase[normalizedWord];
+
+            if (result) {
+                let html = `
+                    <div class="result-header">
+                        <div class="result-word">${normalizedWord}</div>
+                        <div class="result-type">${result.type}</div>
+                    </div>
+                    <div class="result-body">
+                        <div class="synonym-group">
+                            <div class="synonym-label">Synonymer</div>
+                            <div class="synonyms">
+                                ${result.synonyms.map(s => `<span class="synonym" data-word="${s}">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                `;
+
+                if (result.antonyms.length > 0) {
+                    html += `
+                        <div class="synonym-group antonyms">
+                            <div class="synonym-label">Antonymer (modsætninger)</div>
+                            <div class="synonyms">
+                                ${result.antonyms.map(s => `<span class="synonym" data-word="${s}">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (result.related.length > 0) {
+                    html += `
+                        <div class="synonym-group">
+                            <div class="synonym-label">Relaterede ord</div>
+                            <div class="synonyms">
+                                ${result.related.map(s => `<span class="synonym" data-word="${s}">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (result.example) {
+                    html += `<div class="example">${result.example}</div>`;
+                }
+
+                html += '</div>';
+                resultsDiv.innerHTML = html;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <h3>Ingen resultater for "${normalizedWord}"</h3>
+                        <p>Prøv et andet ord eller tjek stavningen.</p>
+                    </div>
+                `;
+            }
+
+            resultsDiv.style.display = 'block';
+            updateHistory();
+
+            // Add click handlers to new synonyms
+            resultsDiv.querySelectorAll('.synonym').forEach(syn => {
+                syn.addEventListener('click', () => {
+                    searchInput.value = syn.dataset.word;
+                    search(syn.dataset.word);
+                });
+            });
+        }
+
+        function updateHistory() {
+            if (searchHistory.length === 0) {
+                historySection.style.display = 'none';
+                return;
+            }
+
+            historySection.style.display = 'block';
+            historyList.innerHTML = searchHistory.map(word => 
+                `<span class="history-item" data-word="${word}">${word}</span>`
+            ).join('');
+
+            historyList.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    searchInput.value = item.dataset.word;
+                    search(item.dataset.word);
+                });
+            });
+        }
+
+        // Event listeners
+        searchBtn.addEventListener('click', () => search(searchInput.value));
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') search(searchInput.value);
+        });
+
+        suggestions.forEach(s => {
+            s.addEventListener('click', () => {
+                searchInput.value = s.dataset.word;
+                search(s.dataset.word);
+            });
+        });
+
+        clearHistoryBtn.addEventListener('click', () => {
+            searchHistory = [];
+            localStorage.removeItem('synonymHistory');
+            updateHistory();
+        });
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.hasAttribute('data-theme');
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        });
+
+        // Init
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            themeToggle.textContent = '🌙';
+        }
+        updateHistory();
+    </script>
+</body>
+</html>
